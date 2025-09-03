@@ -346,7 +346,7 @@
             };
 
             currentAbort = new AbortController();
-            const res = await fetch('/send', {
+            const res = await fetch('/api/send', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload),
@@ -414,7 +414,7 @@
           };
 
           currentAbort = new AbortController();
-          const res = await fetch('/send', {
+          const res = await fetch('/api/send', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
