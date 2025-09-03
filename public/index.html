@@ -34,7 +34,16 @@
               <label for="pass" class="form-label">Gmail App Password *</label>
               <input id="pass" name="pass" type="password" class="form-control" required />
             </div>
-
+            <div class="col-md-2 d-flex align-items-end">
+              <button type="button" id="checkBtn" class="btn btn-outline-secondary w-100">
+                Check
+              </button>
+            </div>
+            <div class="col-12">
+              <div id="checkResult" class="border rounded p-3 small text-muted">
+                Not checked yet.
+              </div>
+            </div>
             <div class="col-12"><hr/></div>
 
             <!-- Bulk via Excel (moved up) -->
@@ -127,5 +136,6 @@
 
   <!-- App Script -->
   <script src="script.js"></script>
+  <script src="check.js" defer></script>
 </body>
 </html>

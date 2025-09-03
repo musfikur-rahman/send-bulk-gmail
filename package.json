@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
+    "imapflow": "^1.0.195",
     "nodemailer": "^7.0.6"
   },
   "engines": {
