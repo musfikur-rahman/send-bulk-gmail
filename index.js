@@ -43,11 +43,46 @@ app.post('/send', async (req, res) => {
       }
     });
   } catch (err) {
-    const code = (err && (err.responseCode || err.status || err.statusCode)) || 500;
+    const code = err?.responseCode || err?.status || err?.statusCode || 500;
+
+    // Friendly messages for common SMTP/transport errors
+    const friendlyByCode = {
+      421: 'Service not available from the mail server.',
+      450: 'Mailbox unavailable (temporary). Try again later.',
+      451: 'Local error in processing. Try again later.',
+      452: 'Insufficient system storage on the server.',
+      454: 'Temporary auth failure. Try again later.',
+      500: 'Mail server rejected the request.',
+      501: 'Invalid address or parameters in the request.',
+      502: 'Bad gateway from the mail server.',
+      503: 'Bad sequence of commands. Check message formatting.',
+      504: 'Command not implemented by the server.',
+      530: 'Authentication required. Please provide Gmail address and App Password.',
+      534: 'Authentication mechanism not supported.',
+      535: 'Authentication failed. Check Gmail address or App Password.',
+      550: 'Recipient address rejected by the mail server.',
+      551: 'User not local. Check the recipient address.',
+      552: 'Mailbox full or message too large.',
+      553: 'Mailbox name not allowed. Check the recipient address.',
+      554: 'Message rejected (spam/policy).',
+    };
+
+    const details = [
+      err?.message,
+      err?.response,
+      err?.command && `command=${err.command}`,
+    ].filter(Boolean).join(' | ');
+
+    const friendly = friendlyByCode[code] || 'Unexpected error while sending mail.';
+
     return res.status(code).json({
       status: code,
       message: 'error',
-      data: { error: (err && err.message) ? err.message : String(err) }
+      data: {
+        error: friendly,
+        details,
+        code
+      }
     });
   }
 });

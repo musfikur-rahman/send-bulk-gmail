@@ -177,6 +177,27 @@
     ));
   }
 
+  // ====== ERROR EXTRACTION HELPER (new) ======
+  async function extractError(res) {
+    let data;
+    try { data = await res.clone().json(); } catch (_) { /* ignore non-JSON */ }
+
+    const apiMsg = data?.data?.error || data?.message;
+    const apiDetails = data?.data?.details;
+    const statusLine = `HTTP ${res.status}${res.statusText ? ' ' + res.statusText : ''}`;
+
+    if (apiMsg && apiDetails) return `${apiMsg} (${apiDetails})`;
+    if (apiMsg) return `${apiMsg} (${statusLine})`;
+
+    let textPreview = '';
+    try {
+      const t = await res.text();
+      textPreview = t ? ` | ${String(t).slice(0,140)}…` : '';
+    } catch (_) {}
+
+    return `Send failed. ${statusLine}${textPreview}`;
+  }
+
   // ====== Verify flow ======
   excelInput.addEventListener('change', () => {
     verified = false;
@@ -332,14 +353,14 @@
               signal: currentAbort.signal
             });
 
-            const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-              const msg = data?.data?.error || res.statusText || 'Send error';
+              const msg = await extractError(res);
               row.Status = msg;
               log('error', `Row ${i + 1}: ${msg}`);
               stopRequested = true; // stop immediately on any error
               break;
             } else {
+              const data = await res.json().catch(() => ({}));
               const id = data?.data?.messageId ?? '(no id)';
               row.Status = 'Success';
               log('success', `Row ${i + 1}: sent (Message ID: ${id}).`);
@@ -400,12 +421,12 @@
             signal: currentAbort.signal
           });
 
-          const data = await res.json().catch(() => ({}));
           if (!res.ok) {
-            const msg = data?.data?.error || res.statusText || 'Send error';
+            const msg = await extractError(res);
             log('error', msg);
             stopRequested = true;
           } else {
+            const data = await res.json().catch(() => ({}));
             const id = data?.data?.messageId ?? '(no id)';
             log('success', `Sent (Message ID: ${id}).`);
           }
