@@ -6,6 +6,7 @@ const app = express();
 
 // Serve static files from ./public (index.html + script.js)
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'api')));
 
 // Parse JSON bodies (for local calls to /api/send)
 app.use(express.json({ limit: '25mb' }));
