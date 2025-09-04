@@ -15,7 +15,7 @@ const sendHandler = require('./api/send.js');
 const receipentsHandler = require('./api/receipents.js');
 
 app.post('/api/send', (req, res) => sendHandler(req, res));
-app.post('/api/count', (req, res) => receipentsHandler(req, res));
+app.post('/api/receipents', (req, res) => receipentsHandler(req, res));
 
 // Optional: 404 for /api/send with other methods
 app.all('/api/send', (req, res) => {

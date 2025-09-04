@@ -71,7 +71,7 @@
     checkBtn.disabled = true;
 
     try {
-      const res = await fetch('/api/count', {
+      const res = await fetch('/api/receipents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // Backend expects { user, apppassword }
