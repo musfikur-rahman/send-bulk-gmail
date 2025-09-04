@@ -1,6 +1,12 @@
 // api/receipents.js
 const { ImapFlow } = require('imapflow');
 
+// Ensure Node runtime on Vercel (not Edge)
+module.exports.config = {
+  runtime: 'nodejs18.x',
+  regions: ['bom1', 'iad1', 'hnd1', 'sfo1'] // optional: pick regions
+};
+
 module.exports = async function receipentsHandler(req, res) {
   const { user, apppassword } = req.body || {};
   if (!user || !apppassword) {
